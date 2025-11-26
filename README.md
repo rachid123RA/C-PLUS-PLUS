@@ -23,17 +23,6 @@ NeuroUIT permet de :
 - **MinGW 13.1.0** ou compilateur C++17 compatible
 - **Windows 10/11** (testé sur Windows)
 
-## Compilation
-
-### Méthode recommandée : Qt Creator
-
-1. Ouvrez `NeuroUIT.pro` dans Qt Creator
-2. Sélectionnez le kit "Desktop Qt 6.10.1 MinGW 64-bit"
-3. Appuyez sur `Ctrl+B` pour compiler
-4. Appuyez sur `Ctrl+R` pour exécuter
-
-L'exécutable sera généré dans le dossier `bin/`.
-
 ## Structure du projet
 
 ```
