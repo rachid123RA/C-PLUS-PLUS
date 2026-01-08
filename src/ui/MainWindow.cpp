@@ -133,6 +133,8 @@ void MainWindow::setupUI() {
     centerLayout->setContentsMargins(10, 10, 10, 10);
     centerLayout->setSpacing(10);
     
+    // Header avec titre et boutons de zoom
+    QHBoxLayout* headerLayout = new QHBoxLayout;
     QLabel* centerTitle = new QLabel("Visualisation du Reseau de Neurones");
     centerTitle->setStyleSheet(
         "font-weight: bold; "
@@ -143,7 +145,55 @@ void MainWindow::setupUI() {
         "border-radius: 5px; "
     );
     centerTitle->setAlignment(Qt::AlignCenter);
-    centerLayout->addWidget(centerTitle);
+    
+    // Boutons de zoom
+    btnZoomIn_ = new QPushButton("➕");
+    btnZoomOut_ = new QPushButton("➖");
+    btnZoomIn_->setToolTip("Agrandir la visualisation");
+    btnZoomOut_->setToolTip("Réduire la visualisation");
+    btnZoomIn_->setStyleSheet(
+        "QPushButton { "
+        "font-size: 18pt; "
+        "font-weight: bold; "
+        "background-color: #4CAF50; "
+        "color: white; "
+        "border: none; "
+        "border-radius: 5px; "
+        "padding: 8px 15px; "
+        "min-width: 40px; "
+        "}"
+        "QPushButton:hover { "
+        "background-color: #45a049; "
+        "}"
+        "QPushButton:pressed { "
+        "background-color: #3d8b40; "
+        "}"
+    );
+    btnZoomOut_->setStyleSheet(
+        "QPushButton { "
+        "font-size: 18pt; "
+        "font-weight: bold; "
+        "background-color: #f44336; "
+        "color: white; "
+        "border: none; "
+        "border-radius: 5px; "
+        "padding: 8px 15px; "
+        "min-width: 40px; "
+        "}"
+        "QPushButton:hover { "
+        "background-color: #da190b; "
+        "}"
+        "QPushButton:pressed { "
+        "background-color: #c62828; "
+        "}"
+    );
+    
+    headerLayout->addWidget(centerTitle, 1);
+    headerLayout->addWidget(btnZoomIn_);
+    headerLayout->addWidget(btnZoomOut_);
+    headerLayout->setSpacing(10);
+    
+    centerLayout->addLayout(headerLayout);
     
     // Container pour centrer parfaitement le visualiseur
     QWidget* visualizerContainer = new QWidget;
@@ -232,6 +282,8 @@ void MainWindow::setupUI() {
     connect(btnStartTraining_, &QPushButton::clicked, this, &MainWindow::onStartTraining);
     connect(btnStopTraining_, &QPushButton::clicked, this, &MainWindow::onStopTraining);
     connect(btnTestNetwork_, &QPushButton::clicked, this, &MainWindow::onTestNetwork);
+    connect(btnZoomIn_, &QPushButton::clicked, networkVisualizer_, &NetworkVisualizer::onZoomIn);
+    connect(btnZoomOut_, &QPushButton::clicked, networkVisualizer_, &NetworkVisualizer::onZoomOut);
 }
 
 void MainWindow::setupMenuBar() {

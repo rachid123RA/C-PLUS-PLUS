@@ -113,6 +113,8 @@ private:
     QPushButton* btnStopTraining_;
     QPushButton* btnTestNetwork_;
     QPushButton* btnWizard_;
+    QPushButton* btnZoomIn_;
+    QPushButton* btnZoomOut_;
     
     // Labels d'information
     QLabel* lblNetworkInfo_;

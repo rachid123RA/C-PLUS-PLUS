@@ -9,6 +9,7 @@
 
 NetworkVisualizer::NetworkVisualizer(QWidget *parent)
     : QWidget(parent)
+    , zoomFactor_(1.0)
 {
     setMinimumSize(800, 600);
     setBackgroundRole(QPalette::Base);
@@ -27,6 +28,29 @@ NetworkVisualizer::NetworkVisualizer(QWidget *parent)
 void NetworkVisualizer::updateNetwork(std::shared_ptr<NeuroUIT::Network> network) {
     network_ = network;
     update(); // Demander un repaint
+}
+
+void NetworkVisualizer::zoomIn() {
+    zoomFactor_ = std::min(zoomFactor_ * 1.2, 3.0); // Maximum 3x
+    update();
+}
+
+void NetworkVisualizer::zoomOut() {
+    zoomFactor_ = std::max(zoomFactor_ / 1.2, 0.5); // Minimum 0.5x
+    update();
+}
+
+void NetworkVisualizer::resetZoom() {
+    zoomFactor_ = 1.0;
+    update();
+}
+
+void NetworkVisualizer::onZoomIn() {
+    zoomIn();
+}
+
+void NetworkVisualizer::onZoomOut() {
+    zoomOut();
 }
 
 void NetworkVisualizer::paintEvent(QPaintEvent* event) {
@@ -68,11 +92,9 @@ void NetworkVisualizer::drawNetwork(QPainter& painter) {
     int availableWidth = widgetWidth - 2 * marginX;
     int availableHeight = widgetHeight - 2 * marginY;
     
-    // Calculer l'espacement optimal entre les couches
-    int layerSpacing = numLayers > 1 ? availableWidth / (numLayers - 1) : availableWidth / 2;
-    
-    // Trouver la couche avec le plus de neurones pour le centrage vertical
-    int maxNodes = *std::max_element(architecture.begin(), architecture.end());
+    // Calculer l'espacement optimal entre les couches (en tenant compte du zoom)
+    int baseLayerSpacing = getLayerSpacing();
+    int layerSpacing = numLayers > 1 ? std::min(availableWidth / (numLayers - 1), baseLayerSpacing) : availableWidth / 2;
     
     // Calculer les positions des neurones - CENTRAGE PARFAIT
     std::vector<std::vector<QPoint>> nodePositions;
@@ -86,11 +108,11 @@ void NetworkVisualizer::drawNetwork(QPainter& painter) {
         int x = marginX + (numLayers > 1 ? layerIdx * layerSpacing : availableWidth / 2);
         
         // Position Y centrée verticalement pour chaque couche
-        int totalHeight = numNodes * NODE_SPACING;
-        int startY = marginY + (availableHeight - totalHeight) / 2 + NODE_SPACING / 2;
+        int totalHeight = numNodes * getNodeSpacing();
+        int startY = marginY + (availableHeight - totalHeight) / 2 + getNodeSpacing() / 2;
         
         for (int nodeIdx = 0; nodeIdx < numNodes; ++nodeIdx) {
-            int y = startY + nodeIdx * NODE_SPACING;
+            int y = startY + nodeIdx * getNodeSpacing();
             layerPositions.push_back(QPoint(x, y));
         }
         
@@ -158,31 +180,33 @@ void NetworkVisualizer::drawNetwork(QPainter& painter) {
         // Dessiner le nombre de neurones
         painter.setFont(QFont("Arial", 8));
         painter.setPen(QColor(120, 120, 120));
-        int countY = nodePositions[layerIdx].back().y() + NODE_SPACING;
+        int countY = nodePositions[layerIdx].back().y() + getNodeSpacing();
         QRect countRect(labelX - 40, countY, 80, 15);
         painter.drawText(countRect, Qt::AlignCenter, QString("%1 neurones").arg(architecture[layerIdx]));
         
         // Dessiner chaque neurone avec ombre et dégradé
+        int nodeRadius = getNodeRadius();
         for (const QPoint& pos : nodePositions[layerIdx]) {
             // Ombre du neurone
             QPainterPath shadowPath;
-            shadowPath.addEllipse(pos.x() + 2, pos.y() + 2, NODE_RADIUS * 2, NODE_RADIUS * 2);
+            shadowPath.addEllipse(pos.x() + 2, pos.y() + 2, nodeRadius * 2, nodeRadius * 2);
             painter.fillPath(shadowPath, QColor(0, 0, 0, 30));
             
             // Dégradé pour le neurone
-            QRadialGradient gradient(pos.x(), pos.y(), NODE_RADIUS);
+            QRadialGradient gradient(pos.x(), pos.y(), nodeRadius);
             gradient.setColorAt(0, nodeColor.lighter(120));
             gradient.setColorAt(1, nodeColor);
             
             // Cercle du neurone avec dégradé
             painter.setBrush(QBrush(gradient));
             painter.setPen(QPen(borderColor, 2.5));
-            painter.drawEllipse(pos, NODE_RADIUS, NODE_RADIUS);
+            painter.drawEllipse(pos, nodeRadius, nodeRadius);
             
             // Point central pour effet 3D
             painter.setBrush(QBrush(nodeColor.lighter(150)));
             painter.setPen(Qt::NoPen);
-            painter.drawEllipse(pos.x() - 3, pos.y() - 3, 6, 6);
+            int centerRadius = std::max(3, static_cast<int>(3 * zoomFactor_));
+            painter.drawEllipse(pos.x() - centerRadius/2, pos.y() - centerRadius/2, centerRadius, centerRadius);
         }
     }
 }

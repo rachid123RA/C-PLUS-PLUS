@@ -1,5 +1,6 @@
 // Fonctions helper pour MainWindow
 #include "ui/MainWindow.h"
+#include "ui/AIAssistantDialog.h"
 #include <QMessageBox>
 #include <QTimer>
 #include <QApplication>
@@ -68,25 +69,9 @@ void MainWindow::onThemeChanged() {
 }
 
 void MainWindow::onShowWizard() {
-    // Mode assistant (wizard) - guide étape par étape
-    QString wizardText = 
-        "🧙 Assistant NeuroUIT\n\n"
-        "Étape 1 : Créer un réseau\n"
-        "   • Cliquez sur 'Nouveau réseau'\n"
-        "   • Ajoutez les couches (ex: 2-2-1 pour XOR)\n\n"
-        "Étape 2 : Charger un dataset\n"
-        "   • Cliquez sur 'Charger dataset'\n"
-        "   • Sélectionnez un fichier CSV\n"
-        "   • Indiquez le nombre d'entrées/sorties\n\n"
-        "Étape 3 : Configurer l'entraînement\n"
-        "   • Taux d'apprentissage : 0.01 à 1.0\n"
-        "   • Nombre d'époques : selon la complexité\n\n"
-        "Étape 4 : Lancer et visualiser\n"
-        "   • Cliquez sur 'Lancer'\n"
-        "   • Observez l'évolution de l'erreur\n\n"
-        "💡 Astuce : Commencez avec le dataset XOR !";
-    
-    QMessageBox::information(this, "Assistant", wizardText);
+    // Ouvrir le dialogue d'assistant IA interactif
+    AIAssistantDialog dialog(this);
+    dialog.exec();
 }
 
 void MainWindow::onToggleFullScreen() {

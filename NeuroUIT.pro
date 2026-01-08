@@ -30,6 +30,7 @@ HEADERS += \
     include/ui/PredictionsChartWidget.h \
     include/ui/StatisticsWidget.h \
     include/ui/ResultsDashboardWidget.h \
+    include/ui/AIAssistantDialog.h \
     include/controller/Controller.h
 
 # Sources
@@ -55,6 +56,7 @@ SOURCES += \
     src/ui/PredictionsChartWidget.cpp \
     src/ui/StatisticsWidget.cpp \
     src/ui/ResultsDashboardWidget.cpp \
+    src/ui/AIAssistantDialog.cpp \
     src/controller/Controller.cpp
 
 # Output directory

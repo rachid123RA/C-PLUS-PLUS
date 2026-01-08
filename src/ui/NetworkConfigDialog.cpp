@@ -93,10 +93,12 @@ void NetworkConfigDialog::setupUI() {
     formLayout->addRow("Nombre de neurones:", numNeuronsSpinBox_);
     
     activationComboBox_ = new QComboBox;
+    activationComboBox_->setEditable(false); // S'assurer qu'il n'est pas éditable
     activationComboBox_->addItem("Sigmoid", static_cast<int>(NeuroUIT::ActivationType::Sigmoid));
     activationComboBox_->addItem("Tanh", static_cast<int>(NeuroUIT::ActivationType::Tanh));
     activationComboBox_->addItem("ReLU", static_cast<int>(NeuroUIT::ActivationType::ReLU));
     activationComboBox_->addItem("Linéaire", static_cast<int>(NeuroUIT::ActivationType::Linear));
+    activationComboBox_->setCurrentIndex(0); // Par défaut, Sigmoid est sélectionné
     formLayout->addRow("Fonction d'activation:", activationComboBox_);
     
     controlsLayout->addLayout(formLayout);
@@ -166,6 +168,12 @@ void NetworkConfigDialog::setupUI() {
 
 void NetworkConfigDialog::onAddLayer() {
     size_t numNeurons = static_cast<size_t>(numNeuronsSpinBox_->value());
+    
+    // S'assurer que le ComboBox est activé pour récupérer la valeur
+    if (!activationComboBox_->isEnabled()) {
+        activationComboBox_->setEnabled(true);
+    }
+    
     NeuroUIT::ActivationType activation = static_cast<NeuroUIT::ActivationType>(
         activationComboBox_->currentData().toInt()
     );
@@ -174,6 +182,10 @@ void NetworkConfigDialog::onAddLayer() {
     layerActivations_.push_back(activation);
     
     updateLayerList();
+    
+    // Sélectionner automatiquement la nouvelle couche ajoutée
+    layerListWidget_->setCurrentRow(static_cast<int>(layerSizes_.size()) - 1);
+    onLayerSelectionChanged();
 }
 
 void NetworkConfigDialog::onUpdateLayer() {
@@ -233,17 +245,33 @@ void NetworkConfigDialog::onLayerSelectionChanged() {
         activationComboBox_->blockSignals(true);
         
         numNeuronsSpinBox_->setValue(static_cast<int>(layerSizes_[currentRow]));
-        activationComboBox_->setCurrentIndex(
-            activationComboBox_->findData(static_cast<int>(layerActivations_[currentRow]))
-        );
         
         // Désactiver la fonction d'activation pour la couche d'entrée (elle n'en a pas)
         if (currentRow == 0) {
             activationComboBox_->setEnabled(false);
             activationComboBox_->setToolTip("La couche d'entree n'a pas de fonction d'activation");
+            // Pour la couche d'entrée, on peut laisser l'index par défaut
         } else {
             activationComboBox_->setEnabled(true);
             activationComboBox_->setToolTip("");
+            
+            // Trouver l'index correspondant à la fonction d'activation de cette couche
+            int activationValue = static_cast<int>(layerActivations_[currentRow]);
+            int foundIndex = activationComboBox_->findData(activationValue);
+            
+            if (foundIndex >= 0) {
+                // Index trouvé, on le sélectionne
+                activationComboBox_->setCurrentIndex(foundIndex);
+            } else {
+                // Si l'index n'est pas trouvé, chercher par correspondance directe
+                // Parcourir tous les items pour trouver celui qui correspond
+                for (int i = 0; i < activationComboBox_->count(); ++i) {
+                    if (activationComboBox_->itemData(i).toInt() == activationValue) {
+                        activationComboBox_->setCurrentIndex(i);
+                        break;
+                    }
+                }
+            }
         }
         
         numNeuronsSpinBox_->blockSignals(false);

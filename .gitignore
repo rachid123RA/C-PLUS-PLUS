@@ -1,61 +1,190 @@
 # Build directories
 build/
 bin/
-out/
+*.exe
 *.o
 *.obj
-*.exe
-*.dll
 *.a
 *.lib
+*.dll
+*.so
+*.dylib
 
 # Qt specific
 *.pro.user
 *.pro.user.*
-*.qmake.stash
+*.qmlc
+*.jsc
 moc_*.cpp
 moc_*.h
 qrc_*.cpp
 ui_*.h
-*.moc
+*.autosave
 
-# CMake
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-Makefile
-*.cmake
+# Qt Creator
+*.creator
+*.creator.user
+*.creator.user.*
+*.includes
+*.config
+*.files
+*.cflags
+*.cxxflags
+*.linkflags
+*.creator.user
 
-# IDE
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# IDE - Visual Studio
 .vs/
-.vscode/
-.idea/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
+# IDE - Qt Creator
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# IDE - CLion
+.idea/
+cmake-build-*/
+
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-desktop.ini
+Desktop.ini
 
 # Temporary files
 *~
 *.swp
-*.bak
 *.tmp
-
-# Qt Creator
-.qtcreator/
-
-# Compiled files
-*.class
-*.pyc
-__pycache__/
+*.temp
+*.bak
+*.backup
 
 # Logs
 *.log
 
-# Documentation temporaire (garder README.md)
-# Mais ignorer les autres fichiers .md de documentation détaillée si nécessaire
+# Documentation build
+doc/
+docs/_build/
+
+# Test coverage
+*.gcov
+*.gcda
+*.gcno
+
+# Valgrind
+valgrind-out.*
+
+# Qt MOC
+moc_*.cpp
+moc_*.h
+
+# Qt RCC
+qrc_*.cpp
+
+# Qt UI
+ui_*.h
+
+# Qt Designer
+*.ui.bak
+
+# Qt Creator Qml
+*.qmlc
+*.jsc
+
+# Qt Creator local machine specific files
+*.pro.user.*
+
+# Qt Creator autosave
+*.autosave
+
+# Qt Creator backup files
+*.pro.user
+
+# Qt Creator session files
+*.creator.user*
+
+# Qt Creator includes
+*.includes
+
+# Qt Creator config
+*.config
+
+# Qt Creator files
+*.files
+
+# Qt Creator cflags
+*.cflags
+
+# Qt Creator cxxflags
+*.cxxflags
+
+# Qt Creator linkflags
+*.linkflags
+
+# Qt Creator user settings
+*.creator.user
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.pdf
+!rapport_neurouit.pdf
+
+# Keep the LaTeX source
+*.tex
