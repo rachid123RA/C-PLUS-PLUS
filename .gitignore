@@ -186,5 +186,5 @@ ui_*.h
 *.pdf
 !rapport_neurouit.pdf
 
-# Keep the LaTeX source
-*.tex
+# Keep the LaTeX source (allow .tex files)
+# *.tex
